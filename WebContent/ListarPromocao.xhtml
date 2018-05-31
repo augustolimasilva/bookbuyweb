@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="MenuRestaurante.xhtml">
+
+	<ui:define name="conteudo">
+
+		<f:event listener="#{beanPromocao.carregarRestaurante}"
+			type="preRenderView" />
+
+		<script>
+			function mascara(o, f) {
+				v_obj = o
+				v_fun = f
+				setTimeout("execmascara()", 1)
+			}
+
+			function execmascara() {
+				v_obj.value = v_fun(v_obj.value)
+			}
+
+			function leech(v) {
+				v = v.replace(/o/gi, "0")
+				v = v.replace(/i/gi, "1")
+				v = v.replace(/z/gi, "2")
+				v = v.replace(/e/gi, "3")
+				v = v.replace(/a/gi, "4")
+				v = v.replace(/s/gi, "5")
+				v = v.replace(/t/gi, "7")
+				return v
+			}
+
+			function soNumeros(v) {
+				v = v.replace(/\D/g, "") // permite digitar apenas numero 
+				v = v.replace(/[0-9]{4}/, "inválido") // invalido se for >= 4 casas
+				return v;
+			}
+
+			function moeda(v) {
+				v = v.replace(/\D/g, "") // permite digitar apenas numero 
+				v = v.replace(/[0-9]{12}/, "inválido") // invalido se for >= 12 casas
+				// 				v=v.replace(/(\d{1})(\d{17})$/,"$1.$2") // coloca ponto antes dos ultimos digitos 
+				// 				v=v.replace(/(\d{1})(\d{13})$/,"$1.$2") // coloca ponto antes dos ultimos 13 digitos 
+				// 				v=v.replace(/(\d{1})(\d{10})$/,"$1.$2") // coloca ponto antes dos ultimos 10 digitos 
+				// 				v=v.replace(/(\d{1})(\d{7})$/,"$1.$2") // coloca ponto antes dos ultimos 7 digitos 
+				v = v.replace(/(\d{1})(\d{1,2})$/, "$1.$2") // coloca ponto antes dos ultimos 2 digitos 
+				return v;
+			}
+		</script>
+		<script>
+			PrimeFaces.locales['pt'] = {
+				closeText : 'Fechar',
+				prevText : 'Anterior',
+				nextText : 'Próximo',
+				currentText : 'Começo',
+				monthNames : [ 'Janeiro', 'Fevereiro', 'Março', 'Abril',
+						'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
+						'Outubro', 'Novembro', 'Dezembro' ],
+				monthNamesShort : [ 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+						'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez' ],
+				dayNames : [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta',
+						'Sexta', 'Sábado' ],
+				dayNamesShort : [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex',
+						'Sáb' ],
+				dayNamesMin : [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
+				weekHeader : 'Semana',
+				firstDay : 0,
+				isRTL : false,
+				showMonthAfterYear : false,
+				yearSuffix : '',
+				timeOnlyTitle : 'Só Horas',
+				timeText : 'Tempo',
+				hourText : 'Hora',
+				minuteText : 'Minuto',
+				secondText : 'Segundo',
+				ampm : false,
+				month : 'Mês',
+				week : 'Semana',
+				day : 'Dia',
+				allDayText : 'Todo o Dia'
+			};
+		</script>
+
+
+		<h:form id="listarPromocao"
+			onkeypress="if(event.keyCode==13)return false;">
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<p:dataTable id="tablePromocao" var="promocao"
+				value="#{beanPromocao.promocoes}" editable="true"
+				sortMode="multiple" rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+				<f:facet name="header">
+            Promoção
+        </f:facet>
+
+				<p:ajax event="rowEdit" listener="#{beanPromocao.onRowEdit}" />
+
+				<p:ajax event="rowEditCancel" listener="#{beanPromocao.onRowCancel}" />
+
+				<p:column style="text-align: center; width: 50px">
+					<p:commandButton icon="ui-icon-trash" update="tablePromocao"
+						action="#{beanPromocao.removerPromocao(promocao)}">
+						<p:confirm header="Excluir" message="Deseja realmente excluir?"
+							icon="ui-icon-alert" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column style="width:32px">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column headerText="Código" sortBy="#{promocao.idPromocao}"
+					filterBy="#{promocao.idPromocao}" filterMatchMode="contains">
+					<h:outputText value="#{promocao.idPromocao}" />
+				</p:column>
+
+				<p:column headerText="Descrição" sortBy="#{promocao.descricao}"
+					filterBy="#{promocao.descricao}" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{promocao.descricao}" />
+						</f:facet>
+
+						<f:facet name="input">
+							<p:inputText id="inputDescricao" value="#{promocao.descricao}"
+								required="true" style="width:100%" />
+							<p:message for="inputDescricao" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Data Inicio" sortBy="#{promocao.dataInicio}"
+					filterBy="#{promocao.dataInicio}" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{promocao.dataInicio}">
+								<f:convertDateTime locale="pt" pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</f:facet>
+
+						<f:facet name="input">
+							<p:calendar locale="pt" pattern="dd/MM/yyyy" mask="true"
+								id="inputDataInicio" value="#{promocao.dataInicio}"
+								required="true" style="width:100%" />
+							<p:message for="inputDataInicio" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Data Final" sortBy="#{promocao.dataFinal}"
+					filterBy="#{promocao.dataFinal}" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{promocao.dataFinal}">
+								<f:convertDateTime locale="pt" pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</f:facet>
+
+						<f:facet name="input">
+							<p:calendar locale="pt" pattern="dd/MM/yyyy" mask="true"
+								id="inputDataFinal" value="#{promocao.dataFinal}"
+								required="true" style="width:100%" />
+							<p:message for="inputDataFinal" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Valor" sortBy="#{promocao.valor}">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{promocao.valor}" />
+						</f:facet>
+
+						<f:facet name="input">
+							<p:inputText id="inputValor" value="#{promocao.valor}"
+								onkeypress="mascara(this,moeda)" required="true"
+								style="width:100%" />
+							<p:message for="inputValor" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Tipo Promoção" filterBy="#{promocao.tipo}"
+					filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{promocao.tipo}" />
+						</f:facet>
+
+						<f:facet name="input">
+							<h:selectOneMenu id="inputTipoPromo"
+								value="#{beanPromocao.tipoPromo}" required="true"
+								style="width:100%">
+								<f:selectItem itemValue="Numerico" itemLabel="Numérico" />
+								<f:selectItem itemValue="Percentual" itemLabel="Percentual" />
+							</h:selectOneMenu>
+							<p:message for="inputTipoPromo" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

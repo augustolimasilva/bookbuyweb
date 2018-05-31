@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="MenuAdmin.xhtml">
+
+	<ui:define name="conteudo">
+		<h1 align="center">
+			<h:outputLabel value="Pesquisar Restaurante" />
+		</h1>
+		<f:view>
+			<h:form id="telaPrincipal">
+				<f:facet name="hearder">
+					<h:outputLabel value="Pesquisar Restaurante" />
+				</f:facet>
+				<br />
+				<p:panelGrid columnClasses="2" columns="2">
+					<h:outputLabel for="cnpj" value="CNPJ Do Restaurante" />
+					<p:inputMask id="cnpj" mask="99.999.999/9999-99"
+						value="#{beanRestaurante.restaurante.cnpj}" />
+				</p:panelGrid>
+				<br />
+				<p:commandButton value="Pesquisar"
+					actionListener="#{beanRestaurante.buscarRestauranteCnpj()}"
+					update="telaPrincipal" />
+				<br />
+				<p:panelGrid columnClasses="2" columns="2">
+					<h:outputLabel value="Nome: " />
+					<h:outputLabel value="#{beanRestaurante.restaurante.nome}" />
+
+					<h:outputLabel value="Telefone: " />
+					<h:outputLabel value="#{beanRestaurante.restaurante.telefone}" />
+
+					<h:outputLabel value="Bairro: " />
+					<h:outputLabel
+						value="#{beanRestaurante.restaurante.endereco.bairro}" />
+
+					<h:outputLabel value="Rua: " />
+					<h:outputLabel value="#{beanRestaurante.restaurante.endereco.rua}" />
+
+					<h:outputLabel value="Numero: " />
+					<h:outputLabel
+						value="#{beanRestaurante.restaurante.endereco.numero}" />
+				</p:panelGrid>
+			</h:form>
+		</f:view>
+	</ui:define>
+</ui:composition>

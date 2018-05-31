@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<style>
+@import
+	url("http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css")
+	;
+
+@import
+	url("http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700");
+
+@import
+	url("#{facesContext.externalContext.requestContextPath}/resources/bootstrap/css/tema.css")
+	;
+
+@media ( max-width :480px) {
+	.form {
+		width: 100%
+	}
+}
+</style>
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Book Buy - Cadastro Cliente</title>
+</h:head>
+
+<h:body>
+	<h2 align="center">
+		<br></br>
+		<br></br> <font color="white" size="8px">Cadastro Cliente </font>
+	</h2>
+
+	<h:form id="idFormMsg">
+		<p:growl autoUpdate="true" showSummary="true" showDetail="true"
+			life="3000" globalOnly="true" />
+	</h:form>
+
+	<center>
+		<h:form id="idFormCadastroCliente">
+			<p:panelGrid columnClasses="2" columns="2">
+				<h:outputLabel for="nome" value="Nome" />
+				<p:inputText id="nome" value="#{beanCliente.cliente.nome}" />
+
+				<h:outputLabel for="email" value="Email" />
+				<p:inputText id="email" value="#{beanCliente.cliente.email}" />
+
+				<h:outputLabel for="telefone" value="Telefone" />
+				<p:inputMask id="telefone" value="#{beanCliente.cliente.telefone}"
+					mask="99-99999-9999" />
+
+				<h:outputLabel for="login" value="Login" />
+				<p:inputText id="login" value="#{beanCliente.cliente.login}" />
+
+				<h:outputText value="Senha:" />
+				<p:password id="inlineFeedback" value="#{beanCliente.cliente.senha}"
+					feedback="true" inline="true" promptLabel="Por favor digitar uma senha" weakLabel="fraca"
+                    goodLabel="boa" strongLabel="excelente" />
+					
+					<h:commandButton value="voltar"   class="btn3" onclick="window.history.back();"/>
+
+				<br />
+			</p:panelGrid>
+
+			<p:commandButton value="Cadastrar"
+				action="#{beanCliente.inserirCliente}" />
+		</h:form>
+	</center>
+</h:body>
+</html>

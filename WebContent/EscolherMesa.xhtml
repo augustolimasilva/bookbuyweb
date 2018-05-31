@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Mesas</title>
+	<style type="text/css">
+.ui-widget {
+	font-size: 90%;
+}
+</style>
+</h:head>
+<h:body>
+
+	<h:form id="idFormMsg">
+		<p:growl autoUpdate="true" showSummary="true" showDetail="true"
+			life="3000" globalOnly="true" />
+	</h:form>
+	<h:form>
+		<p:dataTable id="tableMesa" var="mesa" value="#{beanPedido.mesas}">
+			<p:column headerText="Número da mesa">
+				<h:outputText value="#{mesa.idMesaRestaurante}" />
+			</p:column>
+
+			<p:column headerText="Selecionar mesa">
+				<p:commandButton icon="ui-icon-search"
+					actionListener="#{beanPedido.SelecionarMesa(mesa)}" update="tableMesa" />
+			</p:column>
+		</p:dataTable>
+	</h:form>
+</h:body>
+</html>

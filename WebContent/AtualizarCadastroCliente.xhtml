@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="MenuCliente.xhtml">
+
+	<ui:define name="conteudo">
+		<center>
+			<h1 align="center">
+				<h:outputLabel value="Atualizar Cadastro" />
+			</h1>
+			<br />
+			<h:form id="formAtualizar">
+				<p:panelGrid columnClasses="2" columns="2">
+					<h:outputLabel for="email" value="Email" />
+					<p:outputLabel id="email" value="#{beanCliente.cliente.email}" />
+
+					<h:outputLabel for="nome" value="Nome" />
+					<p:inputText id="nome" value="#{beanCliente.cliente.nome}" />
+
+					<h:outputLabel value="Telefone" />
+					<p:inputMask id="telefone" value="#{beanCliente.cliente.telefone}"
+						mask="99-99999-9999" />
+
+					<h:outputLabel for="senha" value="Senha" />
+					<p:password id="inlineFeedback" value="#{beanCliente.cliente.senha}"
+					feedback="true" inline="true" promptLabel="Por favor digitar uma senha" weakLabel="fraca"
+                    goodLabel="boa" strongLabel="excelente" />
+				</p:panelGrid>
+				<br />
+				<p:commandButton value="Atualizar"
+					action="#{beanCliente.alterarCliente()}" />
+			</h:form>
+		</center>
+	</ui:define>
+</ui:composition>

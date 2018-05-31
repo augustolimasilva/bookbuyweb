@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="Template.xhtml">
+
+	<ui:define name="menuSuperior">
+		<h:form style="float:right;">
+			<p:splitButton value="ADMIN" icon="ui-icon-person">
+				<p:separator />
+				<p:menuitem value="Sair" action="#{beanLogin.logout}"
+					icon="ui-icon-power" />
+			</p:splitButton>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="menuLateral">
+		<h:form id="formAdmin">
+			<p:panelMenu style="width:100%">
+				<p:submenu label="Restaurante">
+					<p:menuitem value="Buscar Restaurante"
+						url="/faces/PesquisarRestaurante.xhtml" />
+				</p:submenu>
+
+				<p:submenu label="Tipo Restaurante">
+					<p:menuitem value="Cadastrar Tipo Restaurante"
+						url="/faces/CadastroTipoRestaurante.xhtml" />
+					<p:menuitem value="Listar Tipo Restaurante"
+						url="/faces/ListarTipoRestaurante.xhtml" />
+				</p:submenu>
+
+				<p:submenu label="Usuario">
+					<p:menuitem value="Cadastrar Usuario"
+						url="/faces/CadastroUsuario.xhtml" />
+				</p:submenu>
+				
+				<p:submenu label="Cliente">
+					<p:menuitem value="Listar todos clientes"
+						url="/faces/ListarTodosClientes.xhtml" />
+				</p:submenu>
+				
+			</p:panelMenu>
+		</h:form>
+	</ui:define>
+	
+	<ui:define name="conteudo">
+		<ui:insert name="conteudo">
+		</ui:insert>
+	</ui:define>
+</ui:composition>

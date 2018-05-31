@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="Template.xhtml">
+
+	<ui:define name="menuSuperior">
+
+		<h:form style="float:left;">
+			<p:selectOneMenu value="#{beanRestaurante.restaurante.nome}">
+				<f:selectItem itemLabel="Selecione o restaurante" itemValue=""
+					noSelectionOption="true" />
+
+				<f:selectItems value="#{beanRestaurante.restaurantes}"
+					var="restaurante" itemLabel="#{restaurante.nome}"
+					itemValue="#{restaurante.nome}" />
+
+				<p:ajax listener="#{beanRestaurante.escolherRestaurante}"
+					event="change"/>
+			</p:selectOneMenu>
+		</h:form>
+
+		<h:form style="float:right;">
+			<p:splitButton value="#{beanUsuario.usuario.login}"
+				icon="ui-icon-person">
+				<p:menuitem value="Inserir restaurante" icon="ui-icon-plusthick"
+					url="/faces/CadastroRestaurante.xhtml" />
+
+				<p:menuitem value="Alterar cadastro"
+					url="/faces/AtualizarCadastroUsuario.xhtml" icon="ui-icon-pencil" />
+
+				<p:menuitem value="Deletar conta" url="/faces/ExcluirUsuario.xhtml"
+					icon="ui-icon-close" />
+				<p:separator />
+				<p:menuitem value="Sair" action="#{beanLogin.logout}"
+					icon="ui-icon-power" />
+			</p:splitButton>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="menuLateral">
+		<h:form id="formRestaurante">
+			<p:panelMenu style="width:100%">
+				<p:submenu label="Dados restaurante">
+					<p:menuitem value="Alterar restaurante"
+						url="/faces/AtualizarCadastroRestaurante.xhtml" />
+
+					<p:menuitem value="Excluir restaurante"
+						url="/faces/ExcluirRestaurante.xhtml" />
+
+					<p:menuitem value="Inserir produto"
+						url="/faces/CadastroProduto.xhtml" />
+
+					<p:menuitem value="Meus produtos" url="/faces/ListarProduto.xhtml" />
+				</p:submenu>
+
+				<p:submenu label="Pedidos">
+					<p:menuitem value="Novo pedido" url="/faces/CadastroPedido.xhtml" />
+
+					<p:menuitem value="Buscar pedido" url="/faces/PesquisarPedido.xhtml" />
+
+					<p:menuitem value="Meus pedidos" url="/faces/ListarPedidoRestaurante.xhtml" />
+				</p:submenu>
+				
+				<p:submenu label="Reservas">
+					<p:menuitem value="Nova reserva" url="/faces/CadastroReserva.xhtml" />
+					<p:menuitem value="Listar reservas" url="/faces/ListarReserva.xhtml" />
+				</p:submenu>
+
+				<p:submenu label="Promoções">
+					<p:menuitem value="Nova promoção"
+						url="/faces/CadastroPromocao.xhtml" />
+
+					<p:menuitem value="Listar promoção"
+						url="/faces/ListarPromocao.xhtml" />
+				</p:submenu>
+
+				<p:submenu label="Mesas">
+					<p:menuitem value="Nova mesa"
+						url="/faces/CadastroMesa.xhtml" />
+
+					<p:menuitem value="Listar mesa"
+						url="/faces/ListarMesa.xhtml" />
+				</p:submenu>
+			</p:panelMenu>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<ui:insert name="conteudo">
+		</ui:insert>
+	</ui:define>
+</ui:composition>

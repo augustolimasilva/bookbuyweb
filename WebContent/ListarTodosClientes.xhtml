@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="MenuAdmin.xhtml">
+
+	<ui:define name="conteudo">
+
+		<h:form>
+			<p:dataTable value="#{beanCliente.clientes}" var="cliente"
+				emptyMessage="Nenhum cliente encontrado." empeditable="true"
+				sortMode="multiple" rows="10" paginator="true"
+				paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="2,10,15" widgetVar="clientesTabela">
+
+				<p:column headerText="Email" sortBy="#{cliente.email}"
+					filterBy="#{cliente.email}" filterMatchMode="contains">
+					<h:outputText value="#{cliente.email}" />
+				</p:column>
+
+				<p:column headerText="Nome" sortBy="#{cliente.nome}"
+					filterBy="#{cliente.nome}" filterMatchMode="contains">>
+					<h:outputText value="#{cliente.nome}" />
+				</p:column>
+
+				<p:column headerText="Telefone" sortBy="#{cliente.telefone}">
+					<h:outputText value="#{cliente.telefone}" />
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

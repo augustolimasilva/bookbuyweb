@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="MenuRestaurante.xhtml">
+
+	<ui:define name="conteudo">
+
+		<f:metadata>
+			<f:viewAction action="#{beanPedido.carregarObjetos}" />
+		</f:metadata>
+		<script>
+			function mascara(o, f) {
+				v_obj = o
+				v_fun = f
+				setTimeout("execmascara()", 1)
+			}
+
+			function execmascara() {
+				v_obj.value = v_fun(v_obj.value)
+			}
+
+			function leech(v) {
+				v = v.replace(/o/gi, "0")
+				v = v.replace(/i/gi, "1")
+				v = v.replace(/z/gi, "2")
+				v = v.replace(/e/gi, "3")
+				v = v.replace(/a/gi, "4")
+				v = v.replace(/s/gi, "5")
+				v = v.replace(/t/gi, "7")
+				return v
+			}
+
+			function soNumeros(v) {
+				v = v.replace(/\D/g, "") // permite digitar apenas numero 
+				v = v.replace(/[0-9]{4}/, "inválido") // invalido se for >= 4 casas
+				return v;
+			}
+			function moeda(v) {
+				v = v.replace(/\D/g, "") // permite digitar apenas numero 
+				v = v.replace(/[0-9]{12}/, "inválido") // invalido se for >= 12 casas
+				v = v.replace(/(\d{1})(\d{17})$/, "$1.$2") // coloca ponto antes dos ultimos digitos 
+				v = v.replace(/(\d{1})(\d{13})$/, "$1.$2") // coloca ponto antes dos ultimos 13 digitos 
+				v = v.replace(/(\d{1})(\d{10})$/, "$1.$2") // coloca ponto antes dos ultimos 10 digitos 
+				v = v.replace(/(\d{1})(\d{7})$/, "$1.$2") // coloca ponto antes dos ultimos 7 digitos 
+				v = v.replace(/(\d{1})(\d{1,4})$/, "$1,$2") // coloca virgula antes dos ultimos 4 digitos 
+				return v;
+			}
+		</script>
+		<h1>
+			<h:outputLabel value="Cadastro Pedido" />
+		</h1>
+
+		<h:form id="formPedido"
+			onkeypress="if(event.keyCode==13)return false;">
+
+			<h:panelGrid columnClasses="2" columns="2">
+
+				<h:outputText value="Data " />
+				<h:outputText value="#{beanPedido.data}" styleClass="outputLabel">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+
+				<p:outputLabel value="Cliente " for="Cliente" />
+				<p:selectOneMenu id="Cliente" value="#{beanPedido.cliente}"
+					converter="converterCliente" var="cliente" filter="true"
+					filterMatchMode="contains">
+					<f:selectItems value="#{beanPedido.clientes}" var="cli"
+						itemLabel="#{cli.login}" itemValue="#{cli}" />
+
+					<p:column>
+						<h:outputText value="#{cliente.login}" />
+					</p:column>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Mesa " for="Mesa" />
+				<p:selectOneMenu id="Mesa"
+					value="#{beanPedido.mesa.idMesaRestaurante}">
+					<f:selectItem itemLabel="Selecione a mesa" itemValue=""
+						noSelectionOption="true" />
+
+					<f:selectItems value="#{beanPedido.mesas}" var="mesa"
+						itemLabel="#{mesa.idMesaRestaurante}"
+						itemValue="#{mesa.idMesaRestaurante}" />
+
+					<p:ajax listener="#{beanPedido.escolherMesa}" event="change" />
+
+				</p:selectOneMenu>
+
+			</h:panelGrid>
+
+			<h:outputLabel for="Produto" value="Produto " />
+
+			<p:selectOneMenu id="Produto"
+				value="#{beanPedido.produtoSelecionado}"
+				converter="converterProduto" var="produto" filter="true"
+				filterMatchMode="contains">
+
+				<f:selectItem itemLabel="Selecione o produto" itemValue=""
+					noSelectionOption="true" />
+				<f:selectItems value="#{beanPedido.produtosRestaurante}" var="prod"
+					itemLabel="#{prod.descricao}" itemValue="#{prod}" />
+
+				<p:column>
+					<h:outputText value="#{produto.descricao}" />
+				</p:column>
+			</p:selectOneMenu>
+			
+			<h:outputLabel for="qtdProduto" value="Quantidade " />
+			<p:inputText id="qtdProduto" value="#{beanPedido.qtdProduto}"
+				onkeypress="mascara(this,soNumeros)" />
+
+			<p:commandButton icon="ui-icon-plus" update="itens"
+				action="#{beanPedido.inserirItem}">
+			</p:commandButton>
+			<p:separator />
+
+			<p:commandButton value="Cadastrar" update="itens"
+				action="#{beanPedido.inserirPedido}">
+			</p:commandButton>
+			<p:separator />
+			<p:dataTable id="itens" var="item" value="#{beanPedido.itens}"
+				editable="true" rows="10">
+				<f:facet name="header">
+            Itens
+        </f:facet>
+
+				<p:column style="text-align: center; width: 50px">
+					<p:commandButton icon="ui-icon-cancel" update="itens"
+						action="#{beanPedido.excluirItemArray(item)}">
+					</p:commandButton>
+				</p:column>
+
+
+				<p:column headerText="Código">
+					<h:outputText value="#{item.produto.idProduto}" />
+
+				</p:column>
+
+				<p:column headerText="Produto">
+					<h:outputText value="#{item.produto.descricao}" />
+				</p:column>
+
+				<p:column headerText="Quantidade">
+					<h:outputText value="#{item.quantidade}" />
+				</p:column>
+
+				<p:column headerText="Valor">
+					<h:outputText value="#{item.valorItem}">
+						<f:convertNumber type="currency" currencySymbol="R$" />
+					</h:outputText>
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

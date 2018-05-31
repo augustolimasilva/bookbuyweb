@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Finalizar Pedido</title>
+	<style type="text/css">
+.ui-widget {
+	font-size: 150%;
+	font-weight: bold;
+	background-color: yellow;
+	font-family: 'Source Sans Pro', sans-serif;
+	!
+	important
+}
+</style>
+</h:head>
+<h:body>
+	<f:metadata>
+		<f:viewAction action="#{beanPagamento.carregarPedido}" />
+	</f:metadata>
+
+	<h:form id="idFormMsg">
+		<p:growl autoUpdate="true" showSummary="true" showDetail="true"
+			life="3000" globalOnly="true" />
+	</h:form>
+	<h:outputLabel value="" />
+	<br />
+	<h:form id="formCadastroPagamento">
+		<p:panelGrid columnClasses="2" columns="2">
+			<h:outputLabel for="valor" value="Valor a ser pago R$ :" />
+			<h:outputLabel id="valor" value="#{beanPagamento.pagamento.valor}" />
+
+			<h:outputLabel for="formaPagamento" value="Forma de Pagamento  :" />
+			<h:selectOneMenu id="formaPagamento"
+				value="#{beanPagamento.formaPagamento}">
+				<f:selectItem itemValue="Dinheiro" itemLabel="Dinheiro" />
+				<f:selectItem itemValue="Credito" itemLabel="Crédito" />
+				<f:selectItem itemValue="Debito" itemLabel="Débito" />
+			</h:selectOneMenu>
+		</p:panelGrid>
+		<br />
+		<p:commandButton value="Efetuar pagamento" onclick="obs.show();"
+			action="#{beanPagamento.inserirPagamento}" />
+	</h:form>
+</h:body>
+</html>

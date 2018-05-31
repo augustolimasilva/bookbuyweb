@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="MenuCliente.xhtml">
+
+	<ui:define name="conteudo">
+		<h1 align="center">
+			<h:outputLabel value="Restaurantes Cadastrados" />
+		</h1>
+		<h:form>
+			<p:dataTable value="#{beanRestaurante.restaurantes}" var="restaurante"
+				emptyMessage="Nenhum restaurante encontrado." empeditable="true"
+				sortMode="multiple" rows="10" paginator="true"
+				paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="2,10,15" widgetVar="restaurantesTabela">
+
+				<p:column headerText="Nome" sortBy="#{restaurante.nome}"
+					filterBy="#{restaurante.nome}" filterMatchMode="contains">
+					<h:outputText value="#{restaurante.nome}" />
+				</p:column>
+
+				<p:column headerText="Telefone" sortBy="#{restaurante.telefone}">
+					<h:outputText value="#{restaurante.telefone}" />
+				</p:column>
+
+				<p:column headerText="Endereco" sortBy="#{restaurante.endereco.rua}"
+					filterBy="#{restaurante.endereco.rua}" filterMatchMode="contains">
+					<h:outputText value="#{restaurante.endereco.rua}" />
+				</p:column>
+
+				<p:column headerText="Número"
+					sortBy="#{restaurante.endereco.numero}">
+					<h:outputText value="#{restaurante.endereco.numero}" />
+				</p:column>
+
+				<p:column headerText="Cidade"
+					sortBy="#{restaurante.endereco.cidade}"
+					filterBy="#{restaurante.endereco.cidade}"
+					filterMatchMode="contains">
+					<h:outputText value="#{restaurante.endereco.cidade}" />
+				</p:column>
+
+				<p:column headerText="Bairro"
+					sortBy="#{restaurante.endereco.bairro}"
+					filterBy="#{restaurante.endereco.bairro}"
+					filterMatchMode="contains">
+					<h:outputText value="#{restaurante.endereco.bairro}" />
+				</p:column>
+
+				<p:column headerText="Avaliação">
+					 <p:rating value="#{beanRestaurante.calcularRate(restaurante)}" readonly="true" />
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

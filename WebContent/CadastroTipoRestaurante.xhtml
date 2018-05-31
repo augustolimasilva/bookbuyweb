@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="MenuAdmin.xhtml">
+
+	<ui:define name="conteudo">
+		<h1>
+			<h:outputLabel value="Cadastro Tipo" />
+		</h1>
+		<br />
+		<h:form id="formTipo">
+			<h:panelGrid columnClasses="2" columns="2">
+				<p:outputLabel for="descricao" value="Descrição" />
+				<p:inputText id="descricao" value="#{beanTipoRestaurante.tipoRestaurante.descricao}" />
+			</h:panelGrid>
+
+			<p:commandButton value="Inserir" update="formTipo"
+				actionListener="#{beanTipoRestaurante.inserirTipoRestaurante}" />
+		</h:form>
+	</ui:define>
+</ui:composition>

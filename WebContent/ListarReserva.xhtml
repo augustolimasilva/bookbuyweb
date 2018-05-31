@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="MenuRestaurante.xhtml">
+
+	<ui:define name="conteudo">
+
+		<f:event listener="#{beanReserva.pegarRestaurante}"
+			type="preRenderView" />
+		<script>
+			PrimeFaces.locales['pt'] = {
+				closeText : 'Fechar',
+				prevText : 'Anterior',
+				nextText : 'Próximo',
+				currentText : 'Começo',
+				monthNames : [ 'Janeiro', 'Fevereiro', 'Março', 'Abril',
+						'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
+						'Outubro', 'Novembro', 'Dezembro' ],
+				monthNamesShort : [ 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+						'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez' ],
+				dayNames : [ 'Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta',
+						'Sexta', 'Sábado' ],
+				dayNamesShort : [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex',
+						'Sáb' ],
+				dayNamesMin : [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
+				weekHeader : 'Semana',
+				firstDay : 0,
+				isRTL : false,
+				showMonthAfterYear : false,
+				yearSuffix : '',
+				timeOnlyTitle : 'Só Horas',
+				timeText : 'Tempo',
+				hourText : 'Hora',
+				minuteText : 'Minuto',
+				secondText : 'Segundo',
+				ampm : false,
+				month : 'Mês',
+				week : 'Semana',
+				day : 'Dia',
+				allDayText : 'Todo o Dia'
+			};
+		</script>
+		<h:form onkeypress="if(event.keyCode==13)return false;">
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<p:dataTable id="tableReserva" var="reserva"
+				value="#{beanReserva.reservas}" editable="true" sortMode="multiple"
+				rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+				<f:facet name="header">
+            Reservas
+        </f:facet>
+
+				<p:ajax event="rowEdit" listener="#{beanReserva.onRowEdit}" />
+
+				<p:ajax event="rowEditCancel" listener="#{beanReserva.onRowCancel}" />
+
+				<p:column style="text-align: center; width: 50px">
+					<p:commandButton icon="ui-icon-trash" update="tableReserva"
+						action="#{beanReserva.removerReserva(reserva)}">
+						<p:confirm header="Cancelar" message="Deseja realmente cancelar?"
+							icon="ui-icon-alert" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column style="width:32px">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column headerText="Código" sortBy="#{reserva.idReserva}"
+					filterBy="#{reserva.idReserva}" filterMatchMode="contains">
+					<h:outputText value="#{reserva.idReserva}" />
+				</p:column>
+
+				<p:column headerText="Data" sortBy="#{reserva.data}"
+					filterBy="#{reserva.data}" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{reserva.data}">
+								<f:convertDateTime locale="pt" pattern="dd/MM/yyyy HH:mm" />
+							</h:outputText>
+						</f:facet>
+
+						<f:facet name="input">
+							<p:calendar locale="pt" pattern="dd/MM/yyyy HH:mm" mask="true"
+								id="inputData" value="#{reserva.data}" required="true"
+								style="width:100%" />
+							<p:message for="inputData" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+
+				<p:column headerText="Cliente" sortBy="#{reserva.cliente.nome}"
+					filterBy="#{reserva.cliente.nome}" filterMatchMode="contains">
+
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{reserva.cliente.nome}" />
+						</f:facet>
+
+						<f:facet name="input">
+							<p:inputText id="inputCliente" value="#{reserva.cliente.nome}"
+								required="true" style="width:100%" />
+							<p:message for="inputCliente" />
+						</f:facet>
+					</p:cellEditor>
+
+				</p:column>
+
+				<p:column headerText="Status" sortBy="#{reserva.status}"
+					filterBy="#{reserva.status}" filterMatchMode="contains">
+
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{reserva.status}" />
+						</f:facet>
+
+						<f:facet name="input">
+							<p:selectOneMenu id="inputStatus" value="#{reserva.status}"
+								required="true">
+								<f:selectItems value="#{beanReserva.statusValues}" />
+							</p:selectOneMenu>
+							<p:message for="inputStatus" />
+
+							<p:message for="inputStatus" />
+						</f:facet>
+					</p:cellEditor>
+
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

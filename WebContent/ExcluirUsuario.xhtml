@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="MenuRestaurante.xhtml">
+
+	<ui:define name="conteudo">
+		<h1 align="center">
+			<h:outputLabel value="Excluir Usuário" />
+		</h1>
+		<h:form id="idFormRemoverUsuario">
+			<br />
+			<p:panelGrid columnClasses="2" columns="2">
+				<h:outputText value="Confirme sua senha: " />
+				<p:password id="senha" value="#{beanUsuario.usuario.senha}"
+					inline="true" />
+			</p:panelGrid>
+			<br />
+			<p:commandButton value="Excluir"
+				actionListener="#{beanUsuario.removerUsuario}"></p:commandButton>
+		</h:form>
+	</ui:define>
+</ui:composition>

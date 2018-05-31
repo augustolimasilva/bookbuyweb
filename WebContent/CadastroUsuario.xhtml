@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="MenuAdmin.xhtml">
+
+	<ui:define name="conteudo">
+		<h1>
+			<h:outputLabel value="Cadastro Usuário" />
+		</h1>
+		<br />
+		<h:form id="formUsuario">
+			<h:panelGrid columnClasses="2" columns="2">
+				<p:outputLabel for="login" value="Login" />
+				<p:inputText id="login" value="#{beanUsuario.usuario.login}" />
+
+				<p:outputLabel for="senha" value="Senha" />
+				<p:password id="senha" value="#{beanUsuario.usuario.senha}"
+					feedback="true" inline="true" promptLabel="Por favor digitar uma senha" weakLabel="fraca"
+                    goodLabel="boa" strongLabel="excelente" />
+                    
+			</h:panelGrid>
+
+			<p:commandButton value="Inserir" update="formUsuario"
+				actionListener="#{beanUsuario.inserirUsuario}" />
+		</h:form>
+	</ui:define>
+</ui:composition>

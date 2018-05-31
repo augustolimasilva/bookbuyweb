@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="MenuRestaurante.xhtml">
+
+	<ui:define name="conteudo">
+
+		<f:metadata>
+			<f:viewAction action="#{beanPedido.carregarPedidos}" />
+		</f:metadata>
+
+		<f:event listener="#{beanPedido.pegarRestaurante}"
+			type="preRenderView" />
+
+		<h:form id="formListarPedidoRestaurante"
+			onkeypress="if(event.keyCode==13)return false;">
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<p:dataTable id="tablePedido" var="pedido"
+				value="#{beanPedido.pedidos}" editable="true" sortMode="multiple"
+				rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+				<f:facet name="header">
+            Pedidos
+        </f:facet>
+
+				<p:column headerText="Cancelar"
+					style="text-align: center; width: 80px">
+					<p:commandButton icon="ui-icon-circle-close" update="tablePedido"
+						action="#{beanPedido.removerPedido(pedido)}">
+						<p:confirm header="Cancelar" message="Deseja realmente cancelar?"
+							icon="ui-icon-alert" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="Mesa"
+					style="text-align: center; width: 80px">
+					<p:commandButton icon="ui-icon-circle-plus"
+						action="#{beanPedido.mostrarMesas(pedido)}">
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="Editar"
+					style="text-align: center; width: 80px">
+					<p:commandButton icon="ui-icon-circle-plus"
+						action="#{beanPedido.carregarItens(pedido)}">
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="Finalizar"
+					style="text-align: center; width: 80px">
+					<p:commandButton icon="ui-icon-circle-check"
+						action="#{beanPedido.efetuarPagamento(pedido)}">
+						<p:ajax event="dialogReturn"
+							listener="#{beanPedido.carregarPedidos}"
+							update="formListarPedidoRestaurante" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column headerText="Mesa"
+					sortBy="#{pedido.mesa.idMesaRestaurante}"
+					filterBy="#{pedido.mesa.idMesaRestaurante}"
+					filterMatchMode="contains">
+					<h:outputText value="#{pedido.mesa.idMesaRestaurante}" />
+				</p:column>
+
+				<p:column headerText="Horário" sortBy="#{pedido.dataHora}"
+					filterBy="#{pedido.dataHora}" filterMatchMode="contains">
+					<h:outputText value="#{pedido.dataHora}">
+						<f:convertDateTime pattern="HH:mm" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Cliente" sortBy="#{pedido.cliente.nome}"
+					filterBy="#{pedido.cliente.nome}" filterMatchMode="contains">
+					<h:outputText value="#{pedido.cliente.nome}" />
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

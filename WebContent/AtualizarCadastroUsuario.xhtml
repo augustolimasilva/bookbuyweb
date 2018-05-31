@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="MenuRestaurante.xhtml">
+
+	<ui:define name="conteudo">
+	<center>
+		<h1 align="center">
+			<h:outputLabel value="Atualizar Cadastro" />
+		</h1>
+
+		<br />
+
+		<h:form id="formAtualizar">
+			<p:panelGrid columnClasses="2" columns="2">
+				<h:outputLabel for="login" value="Login" />
+				<p:outputLabel id="login" value="#{beanUsuario.usuario.login}" />
+
+				<h:outputLabel for="senha" value="Senha" />
+				<p:password id="senha" value="#{beanUsuario.usuario.senha}" />
+			</p:panelGrid>
+
+			<br />
+			<p:commandButton value="Atualizar"
+				actionListener="#{beanUsuario.alterarUsuario}"></p:commandButton>
+		</h:form>
+	</center>
+</ui:define>
+</ui:composition>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="MenuRestaurante.xhtml">
+
+	<ui:define name="titulo">Cadastro Restaurante</ui:define>
+
+	<ui:define name="conteudo">
+		<center>
+			<h1 align="center">
+				<h:outputLabel value="Cadastro Restaurante" />
+			</h1>
+			<script>
+				$(document)
+						.ready(
+								function() {
+									function limpa_formulário_cep() {
+										// Limpa valores do formulário de cep.
+										$("#rua").val("");
+										$("#bairro").val("");
+										$("#cidade").val("");
+										$("#uf").val("");
+										$("#ibge").val("");
+									}
+
+									//Quando o campo cep perde o foco.
+									$("#cep")
+											.blur(
+													function() {
+
+														//Nova variável "cep" somente com dígitos.
+														var cep = $(this).val()
+																.replace(/\D/g,
+																		'');
+
+														//Verifica se campo cep possui valor informado.
+														if (cep != "") {
+
+															//Expressão regular para validar o CEP.
+															var validacep = /^[0-9]{8}$/;
+
+															//Valida o formato do CEP.
+															if (validacep
+																	.test(cep)) {
+
+																//Preenche os campos com "..." enquanto consulta webservice.
+																$("#rua").val(
+																		"...")
+																$("#bairro")
+																		.val(
+																				"...")
+																$("#cidade")
+																		.val(
+																				"...")
+																$("#uf").val(
+																		"...")
+																$("#ibge").val(
+																		"...")
+
+																//Consulta o webservice viacep.com.br/
+																$
+																		.getJSON(
+																				"//viacep.com.br/ws/"
+																						+ cep
+																						+ "/json/?callback=?",
+																				function(
+																						dados) {
+
+																					if (!("erro" in dados)) {
+																						//Atualiza os campos com os valores da consulta.
+																						$(
+																								"#rua")
+																								.val(
+																										dados.logradouro);
+																						$(
+																								"#bairro")
+																								.val(
+																										dados.bairro);
+																						$(
+																								"#cidade")
+																								.val(
+																										dados.localidade);
+																						$(
+																								"#uf")
+																								.val(
+																										dados.uf);
+																						$(
+																								"#ibge")
+																								.val(
+																										dados.ibge);
+																					} //end if.
+																					else {
+																						//CEP pesquisado não foi encontrado.
+																						limpa_formulário_cep();
+																						alert("CEP não encontrado.");
+																					}
+																				});
+															} //end if.
+															else {
+																//cep é inválido.
+																limpa_formulário_cep();
+																alert("Formato de CEP inválido.");
+															}
+														} //end if.
+														else {
+															//cep sem valor, limpa formulário.
+															limpa_formulário_cep();
+														}
+													});
+								});
+
+				function geocode() {
+					PF('geoMap').geocode(document.getElementById('cep').value);
+				}
+				jQuery(document).ready(function() {
+
+				});
+			</script>
+			<script>
+			function mascara(o, f) {
+				v_obj = o
+				v_fun = f
+				setTimeout("execmascara()", 1)
+			}
+
+			function execmascara() {
+				v_obj.value = v_fun(v_obj.value)
+			}
+
+			function leech(v) {
+				v = v.replace(/o/gi, "0")
+				v = v.replace(/i/gi, "1")
+				v = v.replace(/z/gi, "2")
+				v = v.replace(/e/gi, "3")
+				v = v.replace(/a/gi, "4")
+				v = v.replace(/s/gi, "5")
+				v = v.replace(/t/gi, "7")
+				return v
+			}
+			function soNumeros(v) {
+				v = v.replace(/\D/g, "") // permite digitar apenas numero 
+				v = v.replace(/[0-9]{7}/, "inválido") // invalido se for >= 4 casas
+				return v;
+			}
+
+			function moeda(v){ 
+				v=v.replace(/\D/g,"") // permite digitar apenas numero 
+				v=v.replace(/[0-9]{12}/,"inválido")  // invalido se for >= 12 casas
+// 				v=v.replace(/(\d{1})(\d{17})$/,"$1.$2") // coloca ponto antes dos ultimos digitos 
+// 				v=v.replace(/(\d{1})(\d{13})$/,"$1.$2") // coloca ponto antes dos ultimos 13 digitos 
+// 				v=v.replace(/(\d{1})(\d{10})$/,"$1.$2") // coloca ponto antes dos ultimos 10 digitos 
+// 				v=v.replace(/(\d{1})(\d{7})$/,"$1.$2") // coloca ponto antes dos ultimos 7 digitos 
+				v=v.replace(/(\d{1})(\d{1,2})$/,"$1.$2") // coloca ponto antes dos ultimos 2 digitos 
+				return v; 
+				} 
+		</script>
+			<br />
+			<h:form id="idFormCadastroRestaurante" prependId="false">
+				<p:panel id="map">
+					<p:gmap id="mapa" widgetVar="geoMap"
+						center="#{beanRestaurante.posicionamento}" zoom="15"
+						type="ROADMAP" mapTypeControl="false" navigationControl="false"
+						streetView="false" style="width:50%;height:300px"
+						model="#{beanRestaurante.locais}">
+						<p:ajax event="pointSelect"
+							listener="#{beanRestaurante.pontoSelecionado}" update="map" />
+						<p:ajax event="geocode" listener="#{beanRestaurante.onGeocode}"
+							update="map" />
+					</p:gmap>
+
+					<!-- 						<h:outputLabel for="latitude" value="Latitude" /> -->
+					<h:inputHidden id="latitude"
+						value="#{beanRestaurante.restaurante.endereco.latitude}" />
+
+					<!-- 						<h:outputLabel for="longitude" value="Longitude" /> -->
+					<h:inputHidden id="longitude"
+						value="#{beanRestaurante.restaurante.endereco.longitude}" />
+				</p:panel>
+
+				<p:panelGrid columnClasses="2" columns="2">
+					<h:outputLabel for="nome" value="Nome" />
+					<p:inputText id="nome" value="#{beanRestaurante.restaurante.nome}" />
+
+					<h:outputLabel for="cnpj" value="CNPJ" />
+					<p:inputMask mask="99.999.999/9999-99" id="cnpj"
+						value="#{beanRestaurante.restaurante.cnpj}" />
+
+
+					<h:outputLabel for="email" value="E-mail" />
+					<p:inputText id="email"
+						value="#{beanRestaurante.restaurante.email}" />
+
+					<h:outputLabel for="tipo" value="Tipo" />
+					<p:selectCheckboxMenu id="tipo" label="Selecione os tipos"
+						value="#{beanRestaurante.tipoSelecionado}"
+						converter="converterTipo">
+						<f:selectItems value="#{beanRestaurante.tipos}" var="tipo"
+							itemLabel="#{tipo.descricao}" itemValue="#{tipo}" />
+					</p:selectCheckboxMenu>
+
+					<h:outputLabel value="Telefone" />
+					<p:inputMask mask="99-99999-9999" id="telefone"
+						value="#{beanRestaurante.restaurante.telefone}" />
+					<h:outputLabel for="cep" value="Cep" />
+					<p:inputMask id="cep"
+						value="#{beanRestaurante.restaurante.endereco.cep}"
+						mask="99999-999" onchange="geocode()" />
+
+					<h:outputLabel for="rua" value="Rua" />
+					<p:inputText id="rua"
+						value="#{beanRestaurante.restaurante.endereco.rua}" />
+
+					<h:outputLabel for="numero" value="Numero" />
+					<p:inputText id="numero"
+						value="#{beanRestaurante.restaurante.endereco.numero}" onkeypress="mascara(this,soNumeros)"/>
+
+					<h:outputLabel for="complemento" value="Complemento" />
+					<p:inputText id="complemento"
+						value="#{beanRestaurante.restaurante.endereco.complemento}" />
+
+					<h:outputLabel for="cidade" value="Cidade" />
+					<p:inputText id="cidade"
+						value="#{beanRestaurante.restaurante.endereco.cidade}" />
+
+					<h:outputLabel for="bairro" value="Bairro" />
+					<p:inputText id="bairro"
+						value="#{beanRestaurante.restaurante.endereco.bairro}" />
+				</p:panelGrid>
+				<br />
+				<p:commandButton value="Inserir"
+					actionListener="#{beanRestaurante.inserirRestaurante}" ajax="false" />
+			</h:form>
+		</center>
+	</ui:define>
+</ui:composition>

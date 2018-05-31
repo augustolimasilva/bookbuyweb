@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Book Buy</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<style>
+@import
+	url("http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css")
+	;
+
+@import
+	url("http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700");
+
+@import
+	url("#{facesContext.externalContext.requestContextPath}/resources/bootstrap/css/tema.css")
+	;
+
+@media ( max-width :480px) {
+	.form {
+		width: 100%
+	}
+}
+
+a.classe1:link, a.classe1:visited {
+	color:black;
+text-decoration:none;
+font-family: 'Source Sans Pro', sans-serif;
+ font-weight: bold;
+	}
+a.classe1:hover {
+color:white;
+text-decoration:underline;
+font-family: 'Source Sans Pro', sans-serif;
+}
+a.classe1:active {
+	color:#00FF00;
+text-decoration:underline;
+background-color:#000000;
+font-family: 'Source Sans Pro', sans-serif;
+	}
+
+</style>
+
+</h:head>
+
+<h:body>
+
+	<h:form id="idFormMsg">
+		<p:growl autoUpdate="true" showSummary="true" showDetail="true"
+			life="3000" globalOnly="true" />
+	</h:form>
+	<div class="form">
+		<div class="header">
+			<h2>Book Buy</h2>
+		</div>
+		<div class="login">
+			<h:form id="formLogin">
+				<ul>
+					<li><span class="un"><i class="fa fa-user"></i></span> <h:inputText
+							id="login" class="text" placeholder="Login"
+							value="#{beanLogin.login}" /></li>
+					<li><span class="un"><i class="fa fa-lock"></i></span> <h:inputSecret
+							class="text" placeholder="Senha" value="#{beanLogin.senha}" /></li>
+					<li><span class="un"></span> <h:selectOneMenu class="text"
+							value="#{beanLogin.tipo}">
+							<f:selectItem itemValue="Cliente" itemLabel="Sou Cliente" />
+							<f:selectItem itemValue="Restaurante" itemLabel="Sou Restaurante" />
+						</h:selectOneMenu></li>
+					<li><h:commandButton value="Login" class="btn"
+							action="#{beanLogin.login}" /></li>
+					<li>
+						<div class="span">
+							<span class="ch"><a
+								href="/bookbuy/faces/EsqueceuSenha.xhtml" class="classe1">Esqueceu a senha?</a></span>
+						</div>
+						<div>
+						
+							<span><a href="/bookbuy/Home.html" class="classe1">Voltar</a></span>
+						</div>
+					</li>
+<!-- 					<h:commandButton value="voltar" class="btn2"  onclick="window.open('/bookbuy/Home.html')" /> -->
+					
+								
+				</ul>
+			</h:form>
+		</div>
+	</div>
+</h:body>
+</html>

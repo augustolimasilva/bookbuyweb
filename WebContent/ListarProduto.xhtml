@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="MenuRestaurante.xhtml">
+
+	<ui:define name="conteudo">
+
+		<script>
+			function mascara(o, f) {
+				v_obj = o
+				v_fun = f
+				setTimeout("execmascara()", 1)
+			}
+
+			function execmascara() {
+				v_obj.value = v_fun(v_obj.value)
+			}
+
+			function leech(v) {
+				v = v.replace(/o/gi, "0")
+				v = v.replace(/i/gi, "1")
+				v = v.replace(/z/gi, "2")
+				v = v.replace(/e/gi, "3")
+				v = v.replace(/a/gi, "4")
+				v = v.replace(/s/gi, "5")
+				v = v.replace(/t/gi, "7")
+				return v
+			}
+
+			function soNumeros(v) {
+				v = v.replace(/\D/g, "") // permite digitar apenas numero 
+				v = v.replace(/[0-9]{4}/, "inválido") // invalido se for >= 4 casas
+				return v;
+			}
+
+			function moeda(v) {
+				v = v.replace(/\D/g, "") // permite digitar apenas numero 
+				v = v.replace(/[0-9]{12}/, "inválido") // invalido se for >= 12 casas
+				// 				v=v.replace(/(\d{1})(\d{17})$/,"$1.$2") // coloca ponto antes dos ultimos digitos 
+				// 				v=v.replace(/(\d{1})(\d{13})$/,"$1.$2") // coloca ponto antes dos ultimos 13 digitos 
+				// 				v=v.replace(/(\d{1})(\d{10})$/,"$1.$2") // coloca ponto antes dos ultimos 10 digitos 
+				// 				v=v.replace(/(\d{1})(\d{7})$/,"$1.$2") // coloca ponto antes dos ultimos 7 digitos 
+				v = v.replace(/(\d{1})(\d{1,2})$/, "$1.$2") // coloca ponto antes dos ultimos 2 digitos 
+				return v;
+			}
+		</script>
+		<f:event listener="#{beanProduto.pegarRestaurante}"
+			type="preRenderView" />
+		<h:form onkeypress="if(event.keyCode==13)return false;">
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<p:dataTable id="tableProduto" var="produto"
+				value="#{beanProduto.produtos}" editable="true" sortMode="multiple"
+				rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+				<f:facet name="header">
+            Produtos
+        </f:facet>
+
+				<p:ajax event="rowEdit" listener="#{beanProduto.onRowEdit}" />
+
+				<p:ajax event="rowEditCancel" listener="#{beanProduto.onRowCancel}" />
+
+				<p:column style="text-align: center; width: 50px">
+					<p:commandButton icon="ui-icon-trash" update="tableProduto"
+						action="#{beanProduto.removerProduto(produto)}">
+						<p:confirm header="Excluir" message="Deseja realmente excluir?"
+							icon="ui-icon-alert" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column style="width:32px">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column headerText="Código" sortBy="#{produto.idProduto}"
+					filterBy="#{produto.idProduto}" filterMatchMode="contains">
+					<h:outputText value="#{produto.idProduto}" />
+				</p:column>
+				
+				<p:column headerText="Nome" sortBy="#{produto.nome}"
+					filterBy="#{produto.nome}" filterMatchMode="contains">
+
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{produto.nome}" />
+						</f:facet>
+
+						<f:facet name="input">
+							<p:inputText id="inputNome" value="#{produto.nome}"
+								required="true" style="width:100%" />
+							<p:message for="inputNome" />
+						</f:facet>
+					</p:cellEditor>
+
+				</p:column>
+
+				<p:column headerText="Descrição" sortBy="#{produto.descricao}"
+					filterBy="#{produto.descricao}" filterMatchMode="contains">
+
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{produto.descricao}" />
+						</f:facet>
+
+						<f:facet name="input">
+							<p:inputText id="inputDescricao" value="#{produto.descricao}"
+								required="true" style="width:100%" />
+							<p:message for="inputDescricao" />
+						</f:facet>
+					</p:cellEditor>
+
+				</p:column>
+
+
+				<p:column headerText="Valor" sortBy="#{produto.valorProduto}">
+
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{produto.valorProduto}" />
+
+						</f:facet>
+
+						<f:facet name="input">
+							<p:inputText id="inputValor" value="#{produto.valorProduto}"
+								onkeypress="mascara(this,moeda)" required="true"
+								style="width:100%" />
+							<p:message for="inputValor" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

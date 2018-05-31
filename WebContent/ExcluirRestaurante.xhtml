@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="MenuRestaurante.xhtml">
+
+	<ui:define name="conteudo">
+		<h1 align="center">
+			<h:outputLabel value="Excluir Restaurante" />
+		</h1>
+		<center>
+
+			<h:form id="idFormRemoverRestaurante">
+				<br />
+				<p:panelGrid columnClasses="2" columns="2">
+					<h:outputLabel for="cnpj" value="Confirme Seu CNPJ" />
+					<p:inputMask mask="99.999.999/9999-99" id="cnpj" 
+						value="#{beanRestaurante.restaurante.cnpj}" />
+				</p:panelGrid>
+				<br />
+				<p:commandButton value="Excluir"
+					actionListener="#{beanRestaurante.removerRestaurante}"></p:commandButton>
+			</h:form>
+		</center>
+	</ui:define>
+</ui:composition>

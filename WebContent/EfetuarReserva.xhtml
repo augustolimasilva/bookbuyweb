@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="MenuCliente.xhtml">
+
+	<ui:define name="conteudo">
+		<h1>
+			<script>
+				function mascara(o, f) {
+					v_obj = o
+					v_fun = f
+					setTimeout("execmascara()", 1)
+				}
+
+				function execmascara() {
+					v_obj.value = v_fun(v_obj.value)
+				}
+
+				function leech(v) {
+					v = v.replace(/o/gi, "0")
+					v = v.replace(/i/gi, "1")
+					v = v.replace(/z/gi, "2")
+					v = v.replace(/e/gi, "3")
+					v = v.replace(/a/gi, "4")
+					v = v.replace(/s/gi, "5")
+					v = v.replace(/t/gi, "7")
+					return v
+				}
+				function soNumeros(v) {
+					v = v.replace(/\D/g, "") // permite digitar apenas numero 
+					v = v.replace(/[0-9]{4}/, 1) // invalido se for >= 4 casas
+					return v;
+				}
+
+				function moeda(v) {
+					v = v.replace(/\D/g, "") // permite digitar apenas numero 
+					v = v.replace(/[0-9]{12}/, "inválido") // invalido se for >= 12 casas
+					v = v.replace(/(\d{1})(\d{17})$/, "$1.$2") // coloca ponto antes dos ultimos digitos 
+					v = v.replace(/(\d{1})(\d{13})$/, "$1.$2") // coloca ponto antes dos ultimos 13 digitos 
+					v = v.replace(/(\d{1})(\d{10})$/, "$1.$2") // coloca ponto antes dos ultimos 10 digitos 
+					v = v.replace(/(\d{1})(\d{7})$/, "$1.$2") // coloca ponto antes dos ultimos 7 digitos 
+					v = v.replace(/(\d{1})(\d{1,4})$/, "$1.$2") // coloca virgula antes dos ultimos 4 digitos 
+					return v;
+				}
+			</script>
+			<script>
+				PrimeFaces.locales['pt'] = {
+					closeText : 'Fechar',
+					prevText : 'Anterior',
+					nextText : 'Próximo',
+					currentText : 'Começo',
+					monthNames : [ 'Janeiro', 'Fevereiro', 'Março', 'Abril',
+							'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro',
+							'Outubro', 'Novembro', 'Dezembro' ],
+					monthNamesShort : [ 'Jan', 'Fev', 'Mar', 'Abr', 'Mai',
+							'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez' ],
+					dayNames : [ 'Domingo', 'Segunda', 'Terça', 'Quarta',
+							'Quinta', 'Sexta', 'Sábado' ],
+					dayNamesShort : [ 'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex',
+							'Sáb' ],
+					dayNamesMin : [ 'D', 'S', 'T', 'Q', 'Q', 'S', 'S' ],
+					weekHeader : 'Semana',
+					firstDay : 0,
+					isRTL : false,
+					showMonthAfterYear : false,
+					yearSuffix : '',
+					timeOnlyTitle : 'Só Horas',
+					timeText : 'Tempo',
+					hourText : 'Hora',
+					minuteText : 'Minuto',
+					secondText : 'Segundo',
+					ampm : false,
+					month : 'Mês',
+					week : 'Semana',
+					day : 'Dia',
+					allDayText : 'Todo o Dia'
+				};
+			</script>
+			<h:outputLabel value="Efetuar Reserva" />
+		</h1>
+		<h:form id="formEfetuarReserva">
+
+			<p:growl id="growl" sticky="true" showDetail="true" />
+
+			<p:wizard flowListener="#{beanReserva.onFlowProcess}" widgetVar="wiz"
+				backLabel="Voltar" nextLabel="Avançar">
+
+				<p:tab id="restauranteAba" title="Restaurante">
+					<p:panel header="Escolha o restaurante">
+						<p:messages />
+						<h:panelGrid columns="2" columnClasses="label, value">
+
+							<p:selectOneMenu id="Restaurante"
+								value="#{beanReserva.restaurante}"
+								converter="converterRestaurante" var="restaurante" filter="true"
+								filterMatchMode="contains">
+								<p:ajax listener="#{beanReserva.onRestauranteSelecionado}" />
+								<f:selectItem itemLabel="Selecione o restaurante" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{beanReserva.restaurantes}" var="res"
+									itemLabel="#{res.nome}" itemValue="#{res}" />
+
+								<p:column>
+									<h:outputText value="#{restaurante.nome}" />
+								</p:column>
+							</p:selectOneMenu>
+
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="dataAba" title="Data e horário">
+					<p:panel header="Escolha a data e o horário">
+						<p:messages />
+						<h:panelGrid columns="2" columnClasses="label, value">
+
+							<h:outputLabel for="qtdLugar" value="Quantidade de pessoas" />
+							<p:inputText id="qtdLugar" required="true"
+								value="#{beanReserva.qtdPessoas}"
+								onkeypress="mascara(this,soNumeros)" />
+
+							<h:outputLabel for="data" value="Data" />
+							<p:calendar id="data" locale="pt" pattern="dd/MM/yyyy"
+								mask="true">
+								<p:ajax event="dateSelect"
+									listener="#{beanReserva.onDatSelecionada}" update="horarios" />
+
+							</p:calendar>
+
+
+							<p:selectOneMenu id="horarios"
+								style="size:5;height: 100%;width:100%;" required="true"
+								location="center" converter="converterReserva"
+								value="#{beanReserva.reserva.idReserva}" effect="slide"
+								editable="true">
+								<f:selectItems value="#{beanReserva.reservas}" var="reserva"
+									itemLabel="#{reserva.data}" locale="pt"
+									pattern="dd/MM/yyyy HH:mm" itemValue="#{reserva.idReserva}" />
+
+
+							</p:selectOneMenu>
+
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="pedidoAba" title="Pedido">
+					<p:panel header="Pedido">
+						<p:messages />
+
+						<h:panelGrid columns="4" columnClasses="4">
+
+							<h:outputLabel for="Produto" value="Produto " />
+
+							<p:selectOneMenu id="Produto"
+								value="#{beanReserva.produtoSelecionado}"
+								converter="converterProduto" var="produto" filter="true"
+								filterMatchMode="contains">
+
+								<f:selectItem itemLabel="Selecione o produto" itemValue=""
+									noSelectionOption="true" />
+								<f:selectItems value="#{beanReserva.produtosRestaurante}"
+									var="prod" itemLabel="#{prod.descricao}" itemValue="#{prod}" />
+
+								<p:column>
+									<h:outputText value="#{produto.descricao}" />
+								</p:column>
+							</p:selectOneMenu>
+
+							<h:panelGroup>
+								<h:outputLabel for="qtdProduto" value="Quantidade " />
+								<p:inputText id="qtdProduto" value="#{beanReserva.qtdProduto}"
+									onkeypress="mascara(this,soNumeros)" />
+
+								<p:commandButton icon="ui-icon-plus" update="itens"
+									action="#{beanReserva.inserirItem}">
+								</p:commandButton>
+							</h:panelGroup>
+
+							<p:dataTable id="itens" var="item" value="#{beanReserva.itens}"
+								editable="true" rows="10">
+								<f:facet name="header">
+            Itens
+        </f:facet>
+
+								<p:column style="text-align: center; width: 50px">
+									<p:commandButton icon="ui-icon-cancel" update="itens"
+										action="#{beanReserva.excluirItem(item)}">
+									</p:commandButton>
+								</p:column>
+
+
+								<p:column headerText="Id">
+									<h:outputText value="#{item.produto.idProduto}" />
+
+								</p:column>
+
+								<p:column headerText="Produto">
+									<h:outputText value="#{item.produto.descricao}" />
+								</p:column>
+
+								<p:column headerText="Quantidade">
+									<h:outputText value="#{item.quantidade}" />
+								</p:column>
+
+								<p:column headerText="Valor">
+									<h:outputText value="#{item.valorItem}">
+										<f:convertNumber type="currency" currencySymbol="R$" />
+									</h:outputText>
+								</p:column>
+
+							</p:dataTable>
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+
+
+				<p:tab id="confirm" title="Confimação">
+					<p:panel header="Confime os dados">
+						<h:panelGrid id="confirmacao" columns="3"
+							columnClasses="grid,grid,grid">
+							<h:panelGrid columns="2" columnClasses="label, value">
+					
+									<h:outputText for="ConfirmRes" value="Restaurante: " />
+									<h:outputText id="ConfirmRes" value="#{beanReserva.restaurante.nome}"
+										styleClass="outputLabel" />
+
+									<h:outputText for="ConfirmHora" value="Horário " />
+									<h:outputText id="ConfirmHora" value="#{beanReserva.reserva.data}"
+										styleClass="outputLabel">
+										<f:convertDateTime locale="pt" pattern="dd/MM/yyyy HH:mm" />
+
+									</h:outputText>
+
+								<h:outputText value="Pedido" />
+							
+								<p:dataTable id="itensConcluir" var="item"
+									value="#{beanReserva.itens}" editable="true" rows="10">
+									<f:facet name="header">
+            Itens
+        </f:facet>
+
+									<p:column headerText="Id">
+										<h:outputText value="#{item.produto.idProduto}" />
+
+									</p:column>
+
+									<p:column headerText="Produto">
+										<h:outputText value="#{item.produto.descricao}" />
+									</p:column>
+
+									<p:column headerText="Quantidade">
+										<h:outputText value="#{item.quantidade}" />
+									</p:column>
+
+									<p:column headerText="Valor">
+										<h:outputText value="#{item.valorItem}">
+											<f:convertNumber type="currency" currencySymbol="R$" />
+										</h:outputText>
+									</p:column>
+
+								</p:dataTable>
+							</h:panelGrid>
+						</h:panelGrid>
+						<p:commandButton value="Concluir"
+							actionListener="#{beanReserva.efetuarReserva}"
+							update="formEfetuarReserva" process="@this" />
+					</p:panel>
+				</p:tab>
+			</p:wizard>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="MenuAdmin.xhtml">
+
+	<ui:define name="conteudo">
+
+		<f:event listener="#{beanTipoRestaurante.buscarTodosTipoRestaurante}"
+			type="preRenderView" />
+
+		<h:form id="listarTipoRestaurante"
+			onkeypress="if(event.keyCode==13)return false;">
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			<p:dataTable id="tableTipoRestaurante" var="tipoRestaurante"
+				value="#{beanTipoRestaurante.tipoRestaurantes}" editable="true"
+				sortMode="multiple" rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+				<f:facet name="header">
+            Tipo Restaurante
+        </f:facet>
+
+				<p:ajax event="rowEdit" listener="#{beanTipoRestaurante.onRowEdit}" />
+
+				<p:ajax event="rowEditCancel"
+					listener="#{beanTipoRestaurante.onRowCancel}" />
+
+				<p:column style="text-align: center; width: 50px">
+					<p:commandButton icon="ui-icon-trash" update="tableTipoRestaurante"
+						action="#{beanTipoRestaurante.removerTipoRestaurante(tipoRestaurante)}">
+						<p:confirm header="Excluir" message="Deseja realmente Excluir?"
+							icon="ui-icon-alert" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column style="width:32px">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column headerText="Código" sortBy="#{tipoRestaurante.idTipo}"
+					filterBy="#{tipoRestaurante.idTipo}" filterMatchMode="contains">
+					<h:outputText value="#{tipoRestaurante.idTipo}" />
+				</p:column>
+
+				<p:column headerText="Descrição"
+					sortBy="#{tipoRestaurante.descricao}"
+					filterBy="#{tipoRestaurante.descricao}" filterMatchMode="contains">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{tipoRestaurante.descricao}" />
+						</f:facet>
+
+						<f:facet name="input">
+							<p:inputText id="inputDescricao"
+								value="#{tipoRestaurante.descricao}" required="true"
+								style="width:100%" />
+							<p:message for="inputDescricao" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

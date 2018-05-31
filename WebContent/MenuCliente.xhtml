@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="Template.xhtml">
+
+	<ui:define name="menuSuperior">
+		<h:form style="float:right;">
+			<p:splitButton value="#{beanCliente.cliente.login}"
+				icon="ui-icon-person">
+				<p:menuitem value="Deletar conta" ajax="false" icon="ui-icon-close"
+					url="/faces/ExcluirCliente.xhtml" />
+				<p:separator />
+				<p:menuitem value="Sair" action="#{beanLogin.logout}"
+					icon="ui-icon-power" />
+			</p:splitButton>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="menuLateral">
+		<h:form id="formCliente">
+			<p:panelMenu style="width:100%">
+				<p:submenu label="Meus dados">
+					<p:menuitem value="Alterar dados"
+						url="/faces/AtualizarCadastroCliente.xhtml" />
+				</p:submenu>
+
+				<p:submenu label="Restaurante">
+					<p:menuitem value="Listar restaurantes"
+						url="/faces/ListarTodosRestaurantes.xhtml" />
+				</p:submenu>
+
+				<p:submenu label="Reserva">
+					<p:menuitem value="Efetuar Reserva"
+						url="/faces/EfetuarReserva.xhtml" />
+
+					<p:menuitem value="Minhas Reservas"
+						url="/faces/ListarReservaCliente.xhtml" />
+				</p:submenu>
+			</p:panelMenu>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<ui:insert name="conteudo">
+		</ui:insert>
+	</ui:define>
+</ui:composition>

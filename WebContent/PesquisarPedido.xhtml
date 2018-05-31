@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="MenuRestaurante.xhtml">
+
+	<ui:define name="conteudo">
+		<f:metadata>
+			<f:viewAction action="#{beanPedido.carregarObjetos}" />
+		</f:metadata>
+			
+		<h1 align="center">
+			<h:outputLabel value="Pedido" />
+		</h1>
+
+		<script>
+			function myFunction() {
+				document.getElementById("pesquisar").reset();
+			}
+		</script>
+
+		<script>
+			function mascara(o, f) {
+				v_obj = o
+				v_fun = f
+				setTimeout("execmascara()", 1)
+			}
+
+			function execmascara() {
+				v_obj.value = v_fun(v_obj.value)
+			}
+
+			function leech(v) {
+				v = v.replace(/o/gi, "0")
+				v = v.replace(/i/gi, "1")
+				v = v.replace(/z/gi, "2")
+				v = v.replace(/e/gi, "3")
+				v = v.replace(/a/gi, "4")
+				v = v.replace(/s/gi, "5")
+				v = v.replace(/t/gi, "7")
+				return v
+			}
+
+			function soNumeros(v) {
+				v = v.replace(/\D/g, "") // permite digitar apenas numero 
+				v = v.replace(/[0-9]{4}/, "inválido") // invalido se for >= 4 casas
+				return v;
+			}
+			function moeda(v) {
+				v = v.replace(/\D/g, "") // permite digitar apenas numero 
+				v = v.replace(/[0-9]{12}/, "inválido") // invalido se for >= 12 casas
+				v = v.replace(/(\d{1})(\d{17})$/, "$1.$2") // coloca ponto antes dos ultimos digitos 
+				v = v.replace(/(\d{1})(\d{13})$/, "$1.$2") // coloca ponto antes dos ultimos 13 digitos 
+				v = v.replace(/(\d{1})(\d{10})$/, "$1.$2") // coloca ponto antes dos ultimos 10 digitos 
+				v = v.replace(/(\d{1})(\d{7})$/, "$1.$2") // coloca ponto antes dos ultimos 7 digitos 
+				v = v.replace(/(\d{1})(\d{1,4})$/, "$1.$2") // coloca virgula antes dos ultimos 4 digitos 
+				return v;
+			}
+		</script>
+
+
+		<br />
+		<center>
+
+			<h:form id="pesquisar">
+				<p:panelGrid columnClasses="3" columns="3">
+
+
+					<h:outputLabel for="id" value="Código pedido" />
+					<p:inputText id="id" mask="9" onkeypress="mascara(this,soNumeros)"
+						value="#{beanPedido.pedido.idPedido}" />
+
+					<p:commandButton value="Pesquisar"
+						actionListener="#{beanPedido.buscarPedidoId()}"
+						update="formAtualizar" oncomplete="myFunction()"></p:commandButton>
+
+				</p:panelGrid>
+
+			</h:form>
+			<br />
+
+			<h:form id="formAtualizar" prependId="false">
+
+				<h:panelGrid columnClasses="2" columns="2">
+
+					<h:outputText value="Data " />
+					<h:outputText value="#{beanPedido.pedido.dataHora}"
+						styleClass="outputLabel">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+
+
+					<p:outputLabel value="Cliente " />
+
+					<h:outputText value="#{beanPedido.pedido.cliente.login}"
+						styleClass="outputLabel" />
+
+				</h:panelGrid>
+
+				<p:separator />
+
+				<p:dataTable id="itens" var="item" value="#{beanPedido.itens}"
+					editable="true" rows="10">
+					<f:facet name="header">
+            Itens
+        </f:facet>
+
+					<p:column headerText="Produto">
+						<h:outputText value="#{item.produto.descricao}" />
+					</p:column>
+
+					<p:column headerText="Quantidade">
+						<h:outputText value="#{item.quantidade}" />
+					</p:column>
+
+					<p:column headerText="Valor">
+						<h:outputText value="#{item.valorItem}">
+							<f:convertNumber type="currency" currencySymbol="$" />
+						</h:outputText>
+					</p:column>
+
+				</p:dataTable>
+
+			</h:form>
+		</center>
+	</ui:define>
+</ui:composition>
